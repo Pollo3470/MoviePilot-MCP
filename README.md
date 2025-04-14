@@ -1,0 +1,2 @@
+# MoviePilot-MCP
+MoviePilot
