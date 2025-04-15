@@ -6,21 +6,21 @@ from typing import Optional, Dict, Any
 import httpx
 from dotenv import load_dotenv
 
-# Configure logging
+# 配置日志
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Load environment variables
+# 加载环境变量
 load_dotenv()
 
 
 class MoviePilotError(Exception):
-    """Custom exception for MoviePilot API errors."""
+    """MoviePilot API 错误的自定义异常。"""
     pass
 
 
 class AuthenticationError(MoviePilotError):
-    """Exception raised for authentication failures."""
+    """认证失败时引发的异常。"""
 
     def __init__(self, message: str, status_code: Optional[int] = None):
         super().__init__(message)
@@ -71,17 +71,17 @@ class MoviePilotClient:
             response = await self._client.post(
                 login_endpoint, data=login_data, headers=headers
             )
-            response.raise_for_status()  # Raise exception for 4xx/5xx errors
+            response.raise_for_status()  # 抛出4xx/5xx错误异常
 
             token_data = response.json()
             self._token = token_data.get("access_token")
             if not self._token:
-                raise AuthenticationError("Login successful but no access token received.")
-            logger.info("Login successful, token obtained.")
-            # Optionally store user info: token_data.get('user_name'), etc.
+                raise AuthenticationError("登录成功但未收到访问令牌。")
+            logger.info("登录成功，获取到令牌。")
+            # 可选择存储用户信息: token_data.get('user_name')等
 
         except httpx.HTTPStatusError as e:
-            error_detail = "Unknown error"
+            error_detail = "未知错误"
             try:
                 error_detail = e.response.json()
             except Exception:
@@ -99,7 +99,7 @@ class MoviePilotClient:
             raise AuthenticationError(error_message) from e
 
     async def _get_auth_headers(self) -> Dict[str, str]:
-        """Returns authorization headers if logged in."""
+        """如果已登录，返回授权头信息。"""
         if not self._token:
             async with self._auth_lock:
                 if not self._token:
@@ -117,42 +117,42 @@ class MoviePilotClient:
             requires_auth: bool = True,
             retry: int = 1,
     ) -> Any:
-        """Makes an authenticated request to the API."""
+        """向API发送已认证的请求。"""
         headers = self._client.headers.copy()
         if requires_auth:
             headers.update(await self._get_auth_headers())
 
-        url = f"{self.base_url}{endpoint}"  # Construct full URL for logging/errors
-        logger.debug(f"Request: {method} {url} Params: {params} JSON: {json_data}")
+        url = f"{self.base_url}{endpoint}"  # 构建完整URL用于日志记录/错误
+        logger.debug(f"请求: {method} {url} 参数: {params} JSON数据: {json_data}")
 
         try:
             response = await self._client.request(
                 method,
-                endpoint,  # Use relative endpoint for client
+                endpoint,  # 使用相对路径供客户端
                 params=params,
                 json=json_data,
                 data=data,
                 headers=headers,
             )
             response.raise_for_status()
-            # Handle cases where response might be empty or not JSON
+            # 处理响应可能为空或非JSON的情况
             if response.status_code == 204 or not response.content:
                 return None
             try:
                 return response.json()
-            except ValueError:  # Includes JSONDecodeError
-                logger.warning(f"Non-JSON response received for {method} {endpoint}: {response.text[:100]}...")
-                return response.text  # Or raise an error, depending on expected behavior
+            except ValueError:  # 包括JSONDecodeError
+                logger.warning(f"收到非JSON响应，请求 {method} {endpoint}: {response.text[:100]}...")
+                return response.text  # 或者抛出错误，取决于预期行为
 
         except httpx.HTTPStatusError as e:
-            error_detail = "Unknown error"
+            error_detail = "未知错误"
             try:
                 error_detail = e.response.json()
             except Exception:
                 error_detail = e.response.text
             logger.error(f"API 请求失败 ({method} {url}): {e.response.status_code} - {error_detail}")
             if e.response.status_code in (401, 403):
-                self._token = None  # Invalidate token
+                self._token = None  # 使令牌失效
                 if retry > 0:
                     logger.info("认证失败或Token过期，尝试重新请求。")
                     return await self._request(
@@ -166,35 +166,37 @@ class MoviePilotClient:
                     )
                 raise AuthenticationError(f"认证失败或token过期: {e.response.status_code}",
                                           e.response.status_code) from e
-            raise MoviePilotError(f"API Error ({e.response.status_code}): {error_detail}") from e
+            raise MoviePilotError(f"API错误 ({e.response.status_code}): {error_detail}") from e
         except httpx.RequestError as e:
-            logger.error(f"Network error during API request ({method} {url}): {e}")
-            raise MoviePilotError(f"Network error: {e}") from e
+            logger.error(f"API请求过程中发生网络错误 ({method} {url}): {e}")
+            raise MoviePilotError(f"网络错误: {e}") from e
         except AuthenticationError:
             raise
         except Exception as e:
-            logger.error(f"Unexpected error during API request ({method} {url}): {e}")
-            raise MoviePilotError(f"An unexpected error occurred: {e}") from e
+            logger.error(f"API请求过程中发生意外错误 ({method} {url}): {e}")
+            raise MoviePilotError(f"发生了一个意外错误: {e}") from e
 
     async def close(self) -> None:
-        """Closes the underlying HTTP client."""
+        """关闭底层HTTP客户端。"""
         await self._client.aclose()
 
     async def __aenter__(self):
-        # Optionally perform async setup, like ensuring client is ready
+        # 可选的异步设置，例如确保客户端已就绪
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.close()
 
 
+default_client = MoviePilotClient()
+
 async def main():
     async with MoviePilotClient() as client:
         try:
-            # Example API call
+            # API调用示例
             response = await client._request("GET", "/api/v1/user/")
             print(response)
         except MoviePilotError as e:
-            logger.error(f"MoviePilot error: {e}")
+            logger.error(f"MoviePilot错误: {e}")
         except Exception as e:
-            logger.error(f"Unexpected error: {e}")
+            logger.error(f"意外错误: {e}")
