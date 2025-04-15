@@ -171,9 +171,8 @@ sequenceDiagram
 
 ## 开发状态
 
-* 当前状态: 开发MP密码认证功能
-* 已知限制: TODO
-* 未来计划: TODO
+* 当前状态: 构建MCP stdio服务
+* 未来计划: 逐步接入MoviePilot功能 提供MCP SSE部署方式
 
 ## 安全提示
 
