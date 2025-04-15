@@ -140,12 +140,12 @@ sequenceDiagram
     MOVIEPILOT_BASE_URL=http://your-moviepilot-ip:3000  # 你的 MoviePilot 地址
 
     # 配置认证方式
-    MOVIEPILOT_API_KEY=your_moviepilot_api_key
-    MOVIEPILOT_USERNAME=your_moviepilot_username
-    MOVIEPILOT_PASSWORD=your_moviepilot_password
+    MOVIEPILOT_API_KEY=your_moviepilot_api_key  # MoviePilot 的 APIToken
+    MOVIEPILOT_USERNAME=your_moviepilot_username  # 你的 MoviePilot 用户名 (用于密码认证)
+    MOVIEPILOT_PASSWORD=your_moviepilot_password  # 你的 MoviePilot 密码 (用于密码认证)
     ```
 3. **配置服务器:**
-   TODO
+   TODO: CherryStudio stdio安装示例
 
 ## 配置项
 
@@ -167,15 +167,14 @@ sequenceDiagram
 
 ## 开发状态
 
-* 当前状态: TODO
+* 当前状态: 开发MP密码认证功能
 * 已知限制: TODO
 * 未来计划: TODO
 
 ## 安全提示
 
-* **本地运行:** 强烈建议在你的本地网络运行此 MCP 服务器，特别是如果它需要处理 MoviePilot 的敏感凭证（API
-  Key/密码）。避免将其暴露在公网上。
-* **API 安全:** 确保你的 MoviePilot API Key 或密码安全存储，并且不被意外泄露。
+* **本地运行:** 强烈建议在你的本地网络运行此 MCP 服务器，本服务器需要存储MP账密，请确保你的环境安全。
+* **账号安全:** 建议建立一个专用的 MoviePilot 账号用于此 MCP 服务器，避免使用管理员账号。
 
 ## 贡献
 

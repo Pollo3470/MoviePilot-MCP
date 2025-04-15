@@ -1,6 +1,6 @@
-def main():
-    print("Hello from moviepilot-mcp!")
+import asyncio
 
+import client
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(client.main())
