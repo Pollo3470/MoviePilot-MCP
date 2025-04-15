@@ -130,7 +130,7 @@ sequenceDiagram
 
 1. **克隆仓库:**
    ```bash
-   git clone https://github.com/Pollo3470/https://github.com/Pollo3470/MoviePilot-MCP
+   git clone https://github.com/Pollo3470/MoviePilot-MCP
    cd MoviePilot-MCP
    ```
 2. **配置:**
@@ -140,7 +140,7 @@ sequenceDiagram
     MOVIEPILOT_BASE_URL=http://your-moviepilot-ip:3000  # 你的 MoviePilot 地址
 
     # 配置认证方式
-    MOVIEPILOT_API_KEY=your_moviepilot_api_key  # MoviePilot 的 APIToken
+    # MOVIEPILOT_API_KEY=your_moviepilot_api_key  # MoviePilot 的 APIToken (API_KEY可用接口过少，暂时不推荐使用)
     MOVIEPILOT_USERNAME=your_moviepilot_username  # 你的 MoviePilot 用户名 (用于密码认证)
     MOVIEPILOT_PASSWORD=your_moviepilot_password  # 你的 MoviePilot 密码 (用于密码认证)
     ```
@@ -150,7 +150,7 @@ sequenceDiagram
 ## 配置项
 
 * `MOVIEPILOT_BASE_URL`: MoviePilot 服务器的URL。
-* `MOVIEPILOT_API_KEY`: MoviePilot 的 APIToken。
+* `MOVIEPILOT_API_KEY`: MoviePilot 的 APIToken (可选，暂无作用)。
 * `MOVIEPILOT_USERNAME`: 你的 MoviePilot 用户名 (用于密码认证)。
 * `MOVIEPILOT_PASSWORD`: 你的 MoviePilot 密码 (用于密码认证)。
 
