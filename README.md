@@ -144,7 +144,11 @@ sequenceDiagram
     MOVIEPILOT_USERNAME=your_moviepilot_username  # 你的 MoviePilot 用户名 (用于密码认证)
     MOVIEPILOT_PASSWORD=your_moviepilot_password  # 你的 MoviePilot 密码 (用于密码认证)
     ```
-3. **配置服务器:**
+3. **安装依赖:**
+   ```bash
+   uv sync
+   ```
+4. **配置服务器:**
    TODO: CherryStudio stdio安装示例
 
 ## 配置项
