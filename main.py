@@ -2,10 +2,12 @@ from typing import List, Dict, Any, Optional
 
 from mcp.server.fastmcp import FastMCP
 
-from apis import media
+from apis import media, suscribe
+from schemas.subscribe import Subscribe
 
 mcp = FastMCP("MoviePilot MCP Server")
 mediaApi = media.MediaAPI()
+subscribeApi = suscribe.SubscribeAPI()
 
 
 @mcp.tool()
@@ -88,6 +90,19 @@ async def get_season_episodes(
 
     """
     return await mediaApi.get_season_episodes(source_id, season_number, source)
+
+
+@mcp.tool()
+async def add_subscribe(
+        subscribe_data: Subscribe
+):
+    """
+    添加新的媒体订阅
+    Args:
+        subscribe_data:
+
+    """
+    return await subscribeApi.add_subscribe(subscribe_data)
 
 
 if __name__ == "__main__":
