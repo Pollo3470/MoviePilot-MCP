@@ -1,13 +1,14 @@
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Literal
 
-from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
 
-from apis import media, suscribe
+from apis import media, suscribe, recommend
 from schemas.subscribe import Subscribe
 
 mcp = FastMCP("MoviePilot MCP Server")
 mediaApi = media.MediaAPI()
 subscribeApi = suscribe.SubscribeAPI()
+recommendApi = recommend.RecommendAPI()
 
 
 @mcp.tool()
@@ -103,6 +104,36 @@ async def add_subscribe(
 
     """
     return await subscribeApi.add_subscribe(subscribe_data)
+
+
+@mcp.tool()
+async def get_trending_media(
+        media_type: Literal["movie", "tv"] = "movie"
+) -> List[Dict[str, Any]]:
+    """
+    获取 TMDb 上的流行趋势电影或电视剧列表。
+    Args:
+        media_type: 媒体类型 ('movie' 或 'tv')
+
+    Returns:
+        流行媒体信息列表
+    """
+    return await recommendApi.get_trending(media_type)
+
+
+@mcp.tool()
+async def get_upcoming_or_newly_released_media(
+        media_type: Literal["movie", "tv"] = "movie"
+) -> List[Dict[str, Any]]:
+    """
+    获取 TMDb 上即将上映的电影或最新发布的剧集列表 (按日期倒序)。
+    Args:
+        media_type: 媒体类型 ('movie' 或 'tv')
+
+    Returns:
+        即将上映/最新发布媒体信息列表
+    """
+    return await recommendApi.get_upcoming_or_newly_released(media_type)
 
 
 if __name__ == "__main__":

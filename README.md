@@ -22,13 +22,13 @@
 
 本项目实现了一个 MCP 服务器，它充当了 MCP 客户端 (集成在 LLM 应用中) 和你的 MoviePilot 服务器之间的桥梁：
 
-1. **用户** 通过支持 MCP 的 **LLM 应用 (MCP 主机/客户端)** 发出指令 (例如：“帮我订阅电影《沙丘2》”)。
+1. **用户** 通过支持 MCP 的 **LLM 应用 (MCP 主机/客户端)** 发出指令 (例如："帮我订阅电影《沙丘2》")。
 2. **LLM 应用** 将指令解析，识别出意图和参数，并根据 MCP 协议向 **本项目实现的 MCP 服务器** 发出请求。
 3. **MCP 服务器** 接收请求，将其转换为对 **MoviePilot 服务器** 的相应 REST API 调用。
 4. **MoviePilot 服务器** 执行操作 (如添加订阅)。
 5. **MoviePilot 服务器** 将结果返回给 **MCP 服务器**。
 6. **MCP 服务器** 将结果格式化，通过 MCP 协议返回给 **LLM 应用**。
-7. **LLM 应用** 将结果呈现给 **用户** (例如：“好的，已成功添加《沙丘2》到订阅列表。”)。
+7. **LLM 应用** 将结果呈现给 **用户** (例如："好的，已成功添加《沙丘2》到订阅列表。")。
 
 ```mermaid
 sequenceDiagram
@@ -36,7 +36,7 @@ sequenceDiagram
     participant LLM应用 (MCP客户端)
     participant MCP服务器 (本项目)
     participant MoviePilot API
-    用户 ->> LLM应用 (MCP客户端): "订阅电影《沙丘2》"
+    用户 ->> LLM应用 (MCP客户端): "订阅电影《沙丘2`"
     LLM应用 (MCP客户端) ->> MCP服务器 (本项目): MCP请求 (tool: add_subscribe, params: {tmdbid: ..., type: movie})
     MCP服务器 (本项目) ->> MoviePilot API: POST /api/v1/subscribe/ (携带认证和数据)
     MoviePilot API -->> MCP服务器 (本项目): HTTP 200 OK (或其他响应)
@@ -53,6 +53,12 @@ sequenceDiagram
 * **搜索媒体:** 根据标题/关键词查找电影、电视剧或人物。
     * *API:* `GET /api/v1/media/search`
     * *示例:* "搜索电影《星际穿越》", "找找演员 '基努·里维斯'"
+* **获取TMDb趋势:** 获取TMDb上当前流行的电影或电视剧。
+    * *MCP Tool:* `get_trending_media`
+    * *示例:* "看看现在流行什么电影？", "推荐一些热门电视剧"
+* **获取TMDb新作:** 获取TMDb即将上映的电影或最新播出的电视剧。
+    * *MCP Tool:* `get_upcoming_or_newly_released_media`
+    * *示例:* "最近有什么新上映的电影吗？", "有哪些最近开播的电视剧？"
 * **浏览推荐/分类:** 查看来自豆瓣、TMDB等的推荐列表或分类。
     * *API:* `GET /api/v1/discover/*`, `GET /api/v1/recommend/*`
     * *示例:* "推荐一些豆瓣高分科幻片", "看看TMDB上正在热映的电影"
