@@ -76,9 +76,6 @@ class Subscribe(BaseModel):
     # 剧集组
     episode_group: Optional[str] = None
 
-    class Config:
-        orm_mode = True
-
 
 class SubscribeShare(BaseModel):
     # 分享ID

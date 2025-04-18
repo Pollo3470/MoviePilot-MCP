@@ -1,3 +1,4 @@
+import argparse
 from typing import List, Dict, Any, Optional
 
 from fastmcp import FastMCP
@@ -105,5 +106,22 @@ async def add_subscribe(
     return await subscribeApi.add_subscribe(subscribe_data)
 
 
+def main():
+    parser = argparse.ArgumentParser(description="MoviePilot MCP Server")
+    parser.add_argument(
+        "--transport",
+        type=str,
+        choices=["stdio", "sse"],
+        default="stdio",
+        help="Transport method (stdio or sse)",
+    )
+
+    args = parser.parse_args()
+
+    if args.transport == "sse":
+        mcp.run("sse")
+    else:
+        mcp.run("stdio")
+
 if __name__ == "__main__":
-    mcp.run()
+    main()

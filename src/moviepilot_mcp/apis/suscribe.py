@@ -1,7 +1,7 @@
 from typing import Optional, Dict, Any, List
 
-from client import MoviePilotClient, default_client
-from schemas.subscribe import Subscribe
+from moviepilot_mcp.client import MoviePilotClient, default_client
+from moviepilot_mcp.schemas.subscribe import Subscribe
 
 
 class SubscribeAPI:
