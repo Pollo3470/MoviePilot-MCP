@@ -1,9 +1,10 @@
+import argparse
 from typing import List, Dict, Any, Optional, Literal
 
 from fastmcp import FastMCP
 
-from apis import media, suscribe, recommend
-from schemas.subscribe import Subscribe
+from moviepilot_mcp.apis import media, suscribe,recommend
+from moviepilot_mcp.schemas.subscribe import Subscribe
 
 mcp = FastMCP("MoviePilot MCP Server")
 mediaApi = media.MediaAPI()
@@ -135,6 +136,22 @@ async def get_upcoming_or_newly_released_media(
     """
     return await recommendApi.get_upcoming_or_newly_released(media_type)
 
+def main():
+    parser = argparse.ArgumentParser(description="MoviePilot MCP Server")
+    parser.add_argument(
+        "--transport",
+        type=str,
+        choices=["stdio", "sse"],
+        default="stdio",
+        help="Transport method (stdio or sse)",
+    )
+
+    args = parser.parse_args()
+
+    if args.transport == "sse":
+        mcp.run("sse")
+    else:
+        mcp.run("stdio")
 
 if __name__ == "__main__":
-    mcp.run()
+    main()
