@@ -18,11 +18,14 @@ class MediaAPI:
     ) -> List[Dict[str, Any]]:
         """
         模糊搜索媒体/人物信息列表
-        :param title: 关键字
-        :param media_type: 媒体类型  'media'-媒体信息 'person'-人物信息
-        :param page: 页码
-        :param count: 每页数量
-        :return: 搜索结果列表
+        Args:
+            title: 关键字
+            media_type: 媒体类型  'media'-媒体信息 'person'-人物信息
+            page: 页码
+            count: 每页数量
+
+        Returns: 搜索结果列表
+
         """
         endpoint = "/api/v1/media/search"
         params = {
