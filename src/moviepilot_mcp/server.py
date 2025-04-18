@@ -3,8 +3,8 @@ from typing import List, Dict, Any, Optional
 
 from fastmcp import FastMCP
 
-from apis import media, suscribe
-from schemas.subscribe import Subscribe
+from moviepilot_mcp.apis import media, suscribe
+from moviepilot_mcp.schemas.subscribe import Subscribe
 
 mcp = FastMCP("MoviePilot MCP Server")
 mediaApi = media.MediaAPI()
