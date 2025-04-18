@@ -1,24 +1,24 @@
-from typing import Optional, List, Dict, Any
+# 抄自MoviePilot
+from typing import Optional, List, Dict, Any, Literal
 
 from pydantic import BaseModel, Field
 
 
 class Subscribe(BaseModel):
     id: Optional[int] = None
-    # 订阅名称
     name: Optional[str] = None
     # 订阅年份
     year: Optional[str] = None
     # 订阅类型 电影/电视剧
-    type: Optional[str] = None
+    type: Literal["电影", "电视剧"] = "电影"
     # 搜索关键字
     keyword: Optional[str] = None
     tmdbid: Optional[int] = None
     doubanid: Optional[str] = None
     bangumiid: Optional[int] = None
     mediaid: Optional[str] = None
-    # 季号
-    season: Optional[int] = None
+    season: Optional[int] = Field(default=None, description="季号")
+
     # 海报
     poster: Optional[str] = None
     # 背景图
@@ -29,10 +29,11 @@ class Subscribe(BaseModel):
     description: Optional[str] = None
     # 过滤规则
     filter: Optional[str] = None
+
     # 包含
-    include: Optional[str] = None
+    include: Optional[str] = Field(default=None, description="包含关键字,支持正则")
     # 排除
-    exclude: Optional[str] = None
+    exclude: Optional[str] = Field(default=None, description="排除关键字,支持正则")
     # 质量
     quality: Optional[str] = None
     # 分辨率
@@ -57,8 +58,7 @@ class Subscribe(BaseModel):
     sites: Optional[List[int]] = Field(default_factory=list)
     # 下载器
     downloader: Optional[str] = None
-    # 是否洗版
-    best_version: Optional[int] = 0
+    best_version: Optional[Literal[0, 1]] = Field(default=0, description="是否洗版")
     # 当前优先级
     current_priority: Optional[int] = None
     # 保存路径
