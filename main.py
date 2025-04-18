@@ -1,6 +1,6 @@
 from typing import List, Dict, Any, Optional
 
-from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
 
 from apis import media, suscribe
 from schemas.subscribe import Subscribe
