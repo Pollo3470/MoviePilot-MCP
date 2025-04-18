@@ -1,11 +1,19 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "moviepilot-mcp"
 version = "0.1.0"
-description = "Add your description here"
+description = "MoviePilot MCP 服务器，连接大型语言模型与MoviePilot媒体库管理系统"
 readme = "README.md"
+authors = [{ name = "Pollo3470" }]
 requires-python = ">=3.12"
 dependencies = [
     "fastmcp>=2.2.0",
     "httpx[http2]>=0.28.1",
     "pydantic>=2.11.3",
 ]
+
+[tool.setuptools]
+packages = ["apis", "schemas"]
