@@ -3,7 +3,7 @@ from typing import List, Dict, Any, Optional, Literal
 
 from fastmcp import FastMCP
 
-from moviepilot_mcp.apis import media, suscribe,recommend
+from moviepilot_mcp.apis import media, suscribe, recommend
 from moviepilot_mcp.schemas.subscribe import Subscribe
 
 mcp = FastMCP(
@@ -97,6 +97,109 @@ async def add_subscribe(
 
 
 @mcp.tool()
+async def list_subscribes() -> List[Dict[str, Any]]:
+    """
+    列出用户所有媒体订阅
+
+    Returns:
+        订阅信息列表
+    """
+    return await subscribeApi.list_subscribes()
+
+
+@mcp.tool()
+async def get_subscribe(
+        id_type: Literal["subscribe", "tmdb", "douban"],
+        id_value: str,
+        season: Optional[int] = None
+) -> Optional[Dict[str, Any]]:
+    """
+    获取订阅信息。可以通过订阅ID或媒体ID（tmdb/douban）进行查询。
+
+    Args:
+        id_type: ID类型 ("subscribe", "tmdb", "douban")
+        id_value: 订阅ID 或 媒体ID值
+        season: 季号 (可选, 仅当 id_type 为 "tmdb" 或 "douban" 时有效)
+
+    Returns:
+        订阅详细信息，如果未找到则返回 None。
+    """
+    if id_type == "subscribe":
+        try:
+            subscribe_id = int(id_value)
+            return await subscribeApi.get_subscribe_details(subscribe_id)
+        except ValueError:
+            raise ValueError("当 id_type 为 'subscribe' 时，id 必须是整数。")
+    else:
+        media_id = f"{id_type}:{id_value}"
+        return await subscribeApi.get_subscribe_by_media_id(media_id, season)
+
+
+@mcp.tool()
+async def update_subscribe(
+        subscribe_data: Subscribe
+) -> Dict[str, Any]:
+    """
+    更新现有订阅。请求体中必须包含 'id' 字段。
+
+    Args:
+        subscribe_data: 包含订阅ID ('id') 和其他要更新字段的订阅对象。
+
+    Returns:
+        更新后的订阅信息。
+    """
+    if not subscribe_data.id:
+        raise ValueError("更新订阅时，subscribe_data 必须包含 'id' 字段。")
+    return await subscribeApi.update_subscribe(subscribe_data)
+
+
+@mcp.tool()
+async def delete_subscribe(
+        id_type: Literal["subscribe", "tmdb", "douban"],
+        id_value: str,
+        season: Optional[int] = None
+) -> Dict[str, Any]:
+    """
+    删除订阅。可以通过订阅ID或媒体ID（tmdb/douban）进行删除。
+
+    Args:
+        id_type: ID类型 ("subscribe", "tmdb", "douban")
+        id_value: 订阅ID 或 媒体ID值 (例如 123)
+        season: 季号 (可选, 仅当 id_type 为 "tmdb" 或 "douban" 时有效)
+
+    Returns:
+        删除操作的结果信息。
+    """
+    if id_type == "subscribe":
+        try:
+            subscribe_id = int(id_value)
+            return await subscribeApi.delete_subscribe_by_id(subscribe_id)
+        except ValueError:
+            raise ValueError("当 id_type 为 'subscribe' 时，id 必须是整数。")
+    else:
+        media_id = f"{id_type}:{id_value}"
+        return await subscribeApi.delete_subscribe_by_media_id(media_id, season)
+
+
+@mcp.tool()
+async def set_subscribe_status(
+        subscribe_id: int,
+        enable: bool
+) -> Dict[str, Any]:
+    """
+    启用或禁用指定的订阅。
+
+    Args:
+        subscribe_id: 要操作的订阅ID。
+        enable: True 表示启用，False 表示禁用。
+
+    Returns:
+        操作结果信息。
+    """
+    return await subscribeApi.set_subscribe_status(subscribe_id, enable)
+
+
+@mcp.tool()
 async def get_trending_media(
         media_type: Literal["movie", "tv"] = "movie"
 ) -> List[Dict[str, Any]]:
@@ -124,6 +227,7 @@ async def get_upcoming_or_newly_released_media(
         即将上映/最新发布媒体信息列表
     """
     return await recommendApi.get_upcoming_or_newly_released(media_type)
+
 
 def main():
     parser = argparse.ArgumentParser(description="MoviePilot MCP Server")

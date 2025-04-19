@@ -22,7 +22,8 @@ class SubscribeAPI:
         endpoint = "/api/v1/subscribe/"
         if not subscribe_data.name or not subscribe_data.type:
             raise ValueError("订阅数据必须至少包含 name 和 type 字段。")
-        return await self.client._request("POST", endpoint, json_data=dict(subscribe_data))
+        data_dict = subscribe_data.model_dump(exclude_unset=True)
+        return await self.client._request("POST", endpoint, json_data=data_dict)
 
     async def list_subscribes(self) -> List[Dict[str, Any]]:
         """
@@ -42,7 +43,7 @@ class SubscribeAPI:
 
     async def update_subscribe(
             self,
-            subscribe_data: Dict[str, Any]  # 应包含'id'
+            subscribe_data: Subscribe
     ) -> Dict[str, Any]:
         """
         更新现有订阅。
@@ -50,9 +51,10 @@ class SubscribeAPI:
         需要请求体符合Subscribe模式，并包含'id'字段。
         """
         endpoint = "/api/v1/subscribe/"
-        if "id" not in subscribe_data:
+        if not subscribe_data.id:
             raise ValueError("更新订阅时需要提供订阅ID('id')。")
-        return await self.client._request("PUT", endpoint, json_data=subscribe_data)
+        data_dict = subscribe_data.model_dump(exclude_unset=True)
+        return await self.client._request("PUT", endpoint, json_data=data_dict)
 
     async def delete_subscribe_by_id(self, subscribe_id: int) -> Dict[str, Any]:
         """
