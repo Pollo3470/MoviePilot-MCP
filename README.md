@@ -84,17 +84,19 @@
     * *MCP Tool:* `add_subscribe`
     * *示例:* "订阅电影《沙丘2》", "订阅电视剧《黑暗荣耀》第一季，排除预告片"
 * **查看订阅:** 列出所有当前订阅或特定订阅的详情。
-    * *API:* `GET /api/v1/subscribe/`, `GET /api/v1/subscribe/{subscribe_id}`, `GET /api/v1/subscribe/media/{mediaid}`
-    * *示例:* "我现在有哪些订阅？", "我订阅了《奥本海默》吗？"
+  * *MCP Tool:* `list_subscribes` (列出所有), `get_subscribe` (获取单个)
+  * *示例:* "我现在有哪些订阅？", "我订阅了《奥本海默》吗？ (使用 get_subscribe, id_type='tmdb', id='奥本海默的TMDB ID')", "
+    查看订阅ID为5的详情 (使用 get_subscribe, id_type='subscribe', id='5')"
 * **更新订阅:** 修改现有订阅的设置（如过滤规则）。
-    * *API:* `PUT /api/v1/subscribe/`
-    * *示例:* "把我《最后生还者》的订阅改成只下载特效字幕组的版本"
+  * *MCP Tool:* `update_subscribe`
+  * *示例:* "把我《最后生还者》的订阅改成只下载特效字幕组的版本 (需要提供完整的订阅信息，包括ID)"
 * **删除订阅:** 取消订阅。
-    * *API:* `DELETE /api/v1/subscribe/{subscribe_id}`, `DELETE /api/v1/subscribe/media/{mediaid}`
-    * *示例:* "取消我的《沙丘2》订阅"
+  * *MCP Tool:* `delete_subscribe`
+  * *示例:* "取消我的《沙丘2》订阅 (使用 delete_subscribe, id_type='tmdb', id='沙丘2的TMDB ID')", "删除订阅ID为5的订阅 (使用
+    delete_subscribe, id_type='subscribe', id='5')"
 * **启用/禁用订阅:** 暂停或恢复订阅的自动搜索。
-    * *API:* `PUT /api/v1/subscribe/status/{subid}`
-    * *示例:* "暂停《权力的游戏》的订阅"
+  * *MCP Tool:* `set_subscribe_status`
+  * *示例:* "暂停订阅ID为3的订阅", "启用订阅ID为3的订阅"
 
 ### 5. 下载任务管理
 
