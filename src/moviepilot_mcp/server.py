@@ -3,8 +3,10 @@ from typing import List, Dict, Any, Optional, Literal
 
 from fastmcp import FastMCP
 
-from moviepilot_mcp.apis import media, suscribe, recommend
+from moviepilot_mcp.apis import media, suscribe, recommend, discover
 from moviepilot_mcp.schemas.subscribe import Subscribe
+from moviepilot_mcp.schemas.douban_discover import DoubanDiscover
+from moviepilot_mcp.schemas.tmdb_discover import TMDBDiscover
 
 mcp = FastMCP(
     name="MoviePilot MCP Server",
@@ -14,6 +16,7 @@ mcp = FastMCP(
 mediaApi = media.MediaAPI()
 subscribeApi = suscribe.SubscribeAPI()
 recommendApi = recommend.RecommendAPI()
+discoverApi = discover.DiscoverAPI()
 
 
 @mcp.tool()
@@ -200,21 +203,6 @@ async def set_subscribe_status(
 
 
 @mcp.tool()
-async def get_trending_media(
-        media_type: Literal["movie", "tv"] = "movie"
-) -> List[Dict[str, Any]]:
-    """
-    获取 TMDb 上的流行趋势电影或电视剧列表。
-    Args:
-        media_type: 媒体类型 ('movie' 或 'tv')
-
-    Returns:
-        流行媒体信息列表
-    """
-    return await recommendApi.get_trending(media_type)
-
-
-@mcp.tool()
 async def get_upcoming_or_newly_released_media(
         media_type: Literal["movie", "tv"] = "movie"
 ) -> List[Dict[str, Any]]:
@@ -227,6 +215,42 @@ async def get_upcoming_or_newly_released_media(
         即将上映/最新发布媒体信息列表
     """
     return await recommendApi.get_upcoming_or_newly_released(media_type)
+
+
+@mcp.tool()
+async def discover_douban_media(
+        filters: DoubanDiscover,
+        page: int = 1,
+) -> List[Dict[str, Any]]:
+    """
+    基于过滤条件探索豆瓣电影/电视剧
+
+    Args:
+        filters: 过滤条件
+        page: 页码
+
+    Returns:
+        媒体信息列表。
+    """
+    return await discoverApi.discover_douban(filters, page)
+
+
+@mcp.tool()
+async def discover_tmdb_media(
+        filters: TMDBDiscover,
+        page: int = 1
+) -> List[Dict[str, Any]]:
+    """
+    基于过滤条件探索TMDB电影/电视剧
+
+    Args:
+        filters: 过滤条件
+        page: 页码
+
+    Returns:
+        媒体信息列表
+    """
+    return await discoverApi.discover_tmdb(filters, page)
 
 
 def main():

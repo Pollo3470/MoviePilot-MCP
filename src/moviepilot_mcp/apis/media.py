@@ -1,6 +1,6 @@
 from typing import Optional, Dict, Any, List, Union
 
-from moviepilot_mcp.client import MoviePilotClient, default_client
+from ..movie_pilot_client import MoviePilotClient, default_client
 
 
 class MediaAPI:

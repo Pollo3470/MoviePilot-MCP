@@ -1,7 +1,7 @@
 from typing import List, Dict, Any
 from datetime import datetime
 
-from moviepilot_mcp.client import MoviePilotClient, default_client
+from ..movie_pilot_client import MoviePilotClient, default_client
 
 
 class RecommendAPI:
