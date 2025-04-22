@@ -66,6 +66,42 @@ async def get_media_details(
 
 
 @mcp.tool()
+async def discover_douban_media(
+        filters: DoubanDiscover,
+        page: int = 1,
+) -> List[Dict[str, Any]]:
+    """
+    基于过滤条件探索豆瓣电影/电视剧
+
+    Args:
+        filters: 过滤条件
+        page: 页码
+
+    Returns:
+        媒体信息列表。
+    """
+    return await discoverApi.discover_douban(filters, page)
+
+
+@mcp.tool()
+async def discover_tmdb_media(
+        filters: TMDBDiscover,
+        page: int = 1
+) -> List[Dict[str, Any]]:
+    """
+    基于过滤条件探索TMDB电影/电视剧
+
+    Args:
+        filters: 过滤条件
+        page: 页码
+
+    Returns:
+        媒体信息列表
+    """
+    return await discoverApi.discover_tmdb(filters, page)
+
+
+@mcp.tool()
 async def get_season_episodes(
         source_id: str,
         season_number: int,
@@ -215,42 +251,6 @@ async def get_upcoming_or_newly_released_media(
         即将上映/最新发布媒体信息列表
     """
     return await recommendApi.get_upcoming_or_newly_released(media_type)
-
-
-@mcp.tool()
-async def discover_douban_media(
-        filters: DoubanDiscover,
-        page: int = 1,
-) -> List[Dict[str, Any]]:
-    """
-    基于过滤条件探索豆瓣电影/电视剧
-
-    Args:
-        filters: 过滤条件
-        page: 页码
-
-    Returns:
-        媒体信息列表。
-    """
-    return await discoverApi.discover_douban(filters, page)
-
-
-@mcp.tool()
-async def discover_tmdb_media(
-        filters: TMDBDiscover,
-        page: int = 1
-) -> List[Dict[str, Any]]:
-    """
-    基于过滤条件探索TMDB电影/电视剧
-
-    Args:
-        filters: 过滤条件
-        page: 页码
-
-    Returns:
-        媒体信息列表
-    """
-    return await discoverApi.discover_tmdb(filters, page)
 
 
 def main():

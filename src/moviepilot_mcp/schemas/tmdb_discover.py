@@ -95,12 +95,12 @@ class TMDBDiscover(BaseModel):
     media_type: MediaType = Field(default=MediaType.MOVIES, description="媒体类型，电影或电视剧")
     sort_by: Union[TmdbMovieSort, TmdbTvSort] = Field(default=TmdbMovieSort.POPULARITY_DESC, description="排序方式")
     with_genres: Optional[Union[TmdbMovieGenre, TmdbTvGenre, str]] = Field(default=None,
-                                                                           description="选择的风格 ID (可以是枚举或空字符串)")
-    with_original_language: Optional[TmdbLanguage] = Field(default=None, description="原始语言")
+                                                                           description="风格")
+    with_original_language: Optional[TmdbLanguage] = Field(default=None, description="语言")
     with_keywords: Optional[str] = Field(default=None, description="包含的关键字 ID，逗号分隔")
-    with_watch_providers: Optional[str] = Field(default=None, description="包含的观看提供商 ID，逗号分隔")
-    vote_average_gte: float = Field(default=0, alias='vote_average.gte', ge=0, le=10, description="最低平均评分")
-    vote_count_gte: int = Field(default=10, alias='vote_count.gte', ge=0, description="最低投票数")
+    # with_watch_providers: Optional[str] = Field(default=None, description="包含的观看提供商 ID，逗号分隔")
+    vote_average_gte: float = Field(default=0, alias='vote_average', ge=0, le=10, description="最低平均评分")
+    vote_count_gte: int = Field(default=10, alias='vote_count', ge=0, description="最少投票数")
     primary_release_date_gte: Optional[datetime.date] = Field(default=None, description="最早发行日期")
     primary_release_date_lte: Optional[datetime.date] = Field(default=None, description="最晚发行日期")
     first_air_date_gte: Optional[datetime.date] = Field(default=None, description="最早首播日期")
@@ -154,22 +154,18 @@ class TMDBDiscover(BaseModel):
     @property
     def api_params(self) -> Dict[str, Union[str, int, float]]:
         """
-        生成用于调用后端 API (预期包装 TMDB API) 的参数字典。
-
-        使用 Pydantic 的 `model_dump` 方法导出字段，并应用别名（如 vote_average.gte）。
-        排除值为 None 的字段以及 media_type 字段本身。
-        对特定字段（如 vote_average.gte=0）和枚举/日期类型进行额外处理以匹配 API 预期格式。
-        根据媒体类型移除不相关的日期参数。
+        生成用于调用后端TMDB discover API的参数字典
         """
+        # 排除值为 None 的字段以及 media_type 字段
         params = self.model_dump(
-            by_alias=True,  # 使用 vote_average.gte 和 vote_count.gte 等别名
+            by_alias=True,  # 使用 vote_average 和 vote_count 等别名
             exclude={'media_type'},  # API 参数通常不需要 media_type
             exclude_none=True  # 移除值为 None 的字段
         )
 
         # 特殊处理：如果 vote_average_gte 为 0，通常不需要发送给 API
-        if params.get('vote_average.gte') == 0:
-            params.pop('vote_average.gte', None)  # 使用 pop 以防万一 key 不存在
+        if params.get('vote_average') == 0:
+            params.pop('vote_average', None)
 
         # 将枚举值转换为它们的实际值 (字符串)
         if 'sort_by' in params and isinstance(params['sort_by'], Enum):

@@ -102,13 +102,12 @@ class DoubanDiscover(BaseModel):
     """
     豆瓣发现
     """
-    media_type: MediaType = Field(default=MediaType.MOVIES, description="媒体类型，电影或电视剧")
-    sort: DoubanSort = Field(default=DoubanSort.U, description="排序方式 U: 综合 R: 首播时间 T: 近期热度 S: 高分优先")
+    media_type: MediaType = Field(default=MediaType.MOVIES, description="媒体类型")
+    sort: DoubanSort = Field(default=DoubanSort.U, description="排序方式")
     category: Optional[DoubanCategory] = Field(default=None, description="风格")
     zone: Optional[DoubanZone] = Field(default=None, description="地区")
-    year: Optional[Literal[
-        *get_available_years()
-    ]] = Field(default=None, description="年代")
+    year: Optional[Literal[*get_available_years()]] = Field(default=None,
+                                                            description="年份或年代，为年份时仅包含该年份的媒体")
 
     @property
     def tags(self) -> str:
