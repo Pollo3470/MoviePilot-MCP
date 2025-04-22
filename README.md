@@ -51,14 +51,12 @@
 * **搜索媒体:** 根据标题/关键词查找电影、电视剧或人物。
     * *MCP Tool:* `search_media_or_person`
     * *示例:* "搜索电影《星际穿越》", "找找演员 '基努·里维斯'"
-* **获取TMDb趋势:** 获取TMDb上当前流行的电影或电视剧。
-    * *MCP Tool:* `get_trending_media`
-    * *示例:* "看看现在流行什么电影？", "推荐一些热门电视剧"
+* **探索:** 探索来自豆瓣、TMDB的电影、电视剧。
+  * *MCP Tool:* `discover_douban_media`, `discover_tmdb_media`
+  * *示例:* "推荐一些豆瓣高分科幻片", "看看TMDB上正在热映的电影"
 * **获取TMDb新作:** 获取TMDb即将上映的电影或最新播出的电视剧。
     * *MCP Tool:* `get_upcoming_or_newly_released_media`
     * *示例:* "最近有什么新上映的电影吗？", "有哪些最近开播的电视剧？"
-* **浏览推荐/分类:** 查看来自豆瓣、TMDB等的推荐列表或分类。
-    * *示例:* "推荐一些豆瓣高分科幻片", "看看TMDB上正在热映的电影"
 
 ### 2. 获取详情
 
@@ -69,34 +67,34 @@
     * *MCP Tool:* `get_season_episodes`
     * *示例:* "《老友记》有几季？", "看看《怪奇物语》第4季每一集的标题"
 
-### 3. 资源查找
-
-* **精确搜索资源:** 根据 TMDB ID 或豆瓣 ID 查找可下载的种子。
-    * *API:* `GET /api/v1/search/media/{mediaid}`
-    * *示例:* "帮我找《奥本海默》的下载资源", "搜索《最后生还者》第一季所有集的下载"
-* **模糊搜索资源:** 根据关键词搜索种子。
-    * *API:* `GET /api/v1/search/title`
-    * *示例:* "搜索标题里有 '4K HDR 蜘蛛侠' 的资源"
-
-### 4. 订阅管理
+### 3. 订阅管理
 
 * **添加订阅:** 新增电影或电视剧的自动下载/监控。
     * *MCP Tool:* `add_subscribe`
     * *示例:* "订阅电影《沙丘2》", "订阅电视剧《黑暗荣耀》第一季，排除预告片"
 * **查看订阅:** 列出所有当前订阅或特定订阅的详情。
   * *MCP Tool:* `list_subscribes` (列出所有), `get_subscribe` (获取单个)
-  * *示例:* "我现在有哪些订阅？", "我订阅了《奥本海默》吗？ (使用 get_subscribe, id_type='tmdb', id='奥本海默的TMDB ID')", "
-    查看订阅ID为5的详情 (使用 get_subscribe, id_type='subscribe', id='5')"
+  * *示例:* "我现在有哪些订阅？", "我订阅了《奥本海默》吗？ (使用 get_subscribe, id_type='tmdb', id_value='奥本海默的TMDB
+    ID')", "查看订阅ID为5的详情 (使用 get_subscribe, id_type='subscribe', id_value='5')"
 * **更新订阅:** 修改现有订阅的设置（如过滤规则）。
   * *MCP Tool:* `update_subscribe`
   * *示例:* "把我《最后生还者》的订阅改成只下载特效字幕组的版本 (需要提供完整的订阅信息，包括ID)"
 * **删除订阅:** 取消订阅。
   * *MCP Tool:* `delete_subscribe`
-  * *示例:* "取消我的《沙丘2》订阅 (使用 delete_subscribe, id_type='tmdb', id='沙丘2的TMDB ID')", "删除订阅ID为5的订阅 (使用
-    delete_subscribe, id_type='subscribe', id='5')"
+  * *示例:* "取消我的《沙丘2》订阅 (使用 delete_subscribe, id_type='tmdb', id_value='沙丘2的TMDB ID')", "
+    删除订阅ID为5的订阅 (使用 delete_subscribe, id_type='subscribe', id_value='5')"
 * **启用/禁用订阅:** 暂停或恢复订阅的自动搜索。
   * *MCP Tool:* `set_subscribe_status`
   * *示例:* "暂停订阅ID为3的订阅", "启用订阅ID为3的订阅"
+
+### 4. 资源查找
+
+* **精确搜索资源:** 根据 TMDB ID 或豆瓣 ID 查找可下载的种子。
+  * *API:* `GET /api/v1/search/media/{mediaid}`
+  * *示例:* "帮我找《奥本海默》的下载资源", "搜索《最后生还者》第一季所有集的下载"
+* **模糊搜索资源:** 根据关键词搜索种子。
+  * *API:* `GET /api/v1/search/title`
+  * *示例:* "搜索标题里有 '4K HDR 蜘蛛侠' 的资源"
 
 ### 5. 下载任务管理
 
