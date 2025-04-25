@@ -98,13 +98,10 @@ class TMDBDiscover(BaseModel):
                                                                            description="风格")
     with_original_language: Optional[TmdbLanguage] = Field(default=None, description="语言")
     with_keywords: Optional[str] = Field(default=None, description="包含的关键字 ID，逗号分隔")
-    # with_watch_providers: Optional[str] = Field(default=None, description="包含的观看提供商 ID，逗号分隔")
+    with_watch_providers: Optional[str] = Field(default=None, description="包含的观看提供商 ID，逗号分隔")
     vote_average_gte: float = Field(default=0, alias='vote_average', ge=0, le=10, description="最低平均评分")
     vote_count_gte: int = Field(default=10, alias='vote_count', ge=0, description="最少投票数")
-    primary_release_date_gte: Optional[datetime.date] = Field(default=None, description="最早发行日期")
-    primary_release_date_lte: Optional[datetime.date] = Field(default=None, description="最晚发行日期")
-    first_air_date_gte: Optional[datetime.date] = Field(default=None, description="最早首播日期")
-    first_air_date_lte: Optional[datetime.date] = Field(default=None, description="最晚首播日期")
+    release_date: Optional[datetime.date] = Field(default=None, description="上映日期")
 
     @field_validator('sort_by')
     def validate_sort_by(cls, v: Union[TmdbMovieSort, TmdbTvSort], info: ValidationInfo):
@@ -176,17 +173,7 @@ class TMDBDiscover(BaseModel):
             params['with_original_language'] = params['with_original_language'].value
 
         # 格式化日期字段为 YYYY-MM-DD 字符串
-        for date_field in ['primary_release_date_gte', 'primary_release_date_lte', 'first_air_date_gte',
-                           'first_air_date_lte']:
-            if date_field in params and isinstance(params[date_field], datetime.date):
-                params[date_field] = params[date_field].isoformat()
-
-        # 根据 media_type 移除不相关的日期参数
-        if self.media_type == MediaType.MOVIES:
-            params.pop('first_air_date_gte', None)
-            params.pop('first_air_date_lte', None)
-        elif self.media_type == MediaType.TVS:
-            params.pop('primary_release_date_gte', None)
-            params.pop('primary_release_date_lte', None)
+        if isinstance(params["release_date"], datetime.date):
+            params["release_date"] = params["release_date"].isoformat()
 
         return params
