@@ -10,10 +10,10 @@ class MediaServerAPI:
 
     async def check_media_exists_local(
             self,
+            mtype: Optional[str] = None,
             tmdbid: Optional[int] = None,
             title: Optional[str] = None,
             year: Optional[str] = None,
-            mtype: Optional[str] = None,
             season: Optional[int] = None,
     ) -> Dict[str, Any]:
         """
@@ -21,10 +21,10 @@ class MediaServerAPI:
         """
         endpoint = "/api/v1/mediaserver/exists"
         params = {}
+        if mtype: params["mtype"] = mtype
         if tmdbid: params["tmdbid"] = tmdbid
         if title: params["title"] = title
         if year: params["year"] = year
-        if mtype: params["mtype"] = mtype
         if season is not None: params["season"] = season
         if not tmdbid and not title:
             raise ValueError("Either tmdbid or title must be provided for exists check.")

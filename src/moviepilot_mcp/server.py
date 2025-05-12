@@ -258,17 +258,17 @@ def main():
     parser.add_argument(
         "--transport",
         type=str,
-        choices=["stdio", "sse"],
+        choices=["stdio", "streamable-http"],
         default="stdio",
-        help="Transport method (stdio or sse)",
+        help="Transport method (stdio or streamable http)",
     )
 
     args = parser.parse_args()
 
-    if args.transport == "sse":
-        mcp.run("sse")
+    if args.transport == "streamable-http":
+        mcp.run(transport="streamable-http")
     else:
-        mcp.run("stdio")
+        mcp.run(transport="stdio")
 
 
 if __name__ == "__main__":

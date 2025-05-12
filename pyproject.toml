@@ -12,9 +12,9 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-    "fastmcp>=2.2.0",
+    "fastmcp>=2.3.3",
     "httpx[http2]>=0.28.1",
-    "pydantic>=2.11.3",
+    "pydantic>=2.11.4",
 ]
 dynamic = ["version"]
 
