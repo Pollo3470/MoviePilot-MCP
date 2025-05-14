@@ -20,6 +20,73 @@
 
 ## 使用方式
 
+### 1. 使用 Docker 运行 streamable http 服务端
+
+本项目支持使用 Docker 进行部署。您可以从 Docker Hub 拉取预构建的镜像。
+
+**Docker Hub 镜像:** `pollo3470/moviepilot-mcp`
+
+#### a. 使用 `docker run`
+
+1. **拉取镜像:**
+   ```bash
+   docker pull pollo3470/moviepilot-mcp:latest
+   ```
+
+2. **准备 `.env` 文件:**
+   在您希望运行 Docker 的目录下创建一个 `.env` 文件，填入必要的配置信息。
+   ```dotenv
+   # .env
+   MOVIEPILOT_BASE_URL=http://your-moviepilot-ip:3000  # 你的 MoviePilot 地址
+   MOVIEPILOT_USERNAME=your_moviepilot_username  # 你的 MoviePilot 用户名 (用于密码认证)
+   MOVIEPILOT_PASSWORD=your_moviepilot_password  # 你的 MoviePilot 密码 (用于密码认证)
+   MCP_API_KEY=your_strong_api_key # 请设置一个强随机的API密钥，用于保护MCP服务器的访问。未设置时会自动生成一个随机密钥并打印到日志。
+   # 可选配置
+   # LOG_LEVEL=INFO
+   ```
+
+3. **运行容器:**
+   ```bash
+   docker run -d \
+     --name moviepilot-mcp \
+     -p 8000:8000 \
+     --env-file ./.env \
+     --restart unless-stopped \
+     pollo3470/moviepilot-mcp:latest
+   ```
+   参数说明:
+    * `-d`: 后台运行容器。
+    * `--name moviepilot-mcp`: 给容器命名。
+    * `-p 8000:8000`: 将主机的 8000 端口映射到容器的 8000 端口。
+    * `--env-file ./.env`: 从当前目录下的 `.env` 文件加载环境变量。您也可以使用多个 `-e` 参数单独指定环境变量，例如
+      `-e MOVIEPILOT_BASE_URL="http://localhost:3000" -e MCP_API_KEY="your_secret_key"`。
+    * `--restart unless-stopped`: 容器退出时自动重启，除非手动停止。
+
+#### b. 使用 `docker-compose`
+
+参考本项目根目录下 `docker-compose.yml` 文件，创建一个docker-compose.yml文件。
+
+1. **准备 `.env` 文件:**
+   与 `docker-compose.yml` 同级，创建一个 `.env` 文件，并填入必要的配置信息，如上文 `docker run` 部分所述。*
+   *确保 `MCP_API_KEY` 已设置。**
+
+2. **运行:**
+   在docker-compose.yml文件所在目录下执行：
+   ```bash
+   docker-compose up -d
+   ```
+   此命令会拉取最新镜像（如果本地没有或有更新）并启动服务。
+
+   要停止服务，请运行：
+   ```bash
+   docker-compose down
+   ```
+
+启动后，streamable http 的 MCP 服务将在 `http://localhost:8000/mcp` (或您配置的主机和端口) 上可用。请确保在客户端请求时，在
+HTTP Header 中包含 `X-API-Key` 并填入您在 `.env` 文件中设置的 `MCP_API_KEY`。
+
+### 2. Stdio模式
+
 在支持 MCP 的应用(如Cline)中添加以下配置。
 
 ```json
@@ -40,8 +107,6 @@
 }
 ```
 
-> 如果使用的是Cherry Studio，参考上面的配置进行设置
-
 ## 核心功能
 
 基于 MoviePilot 的 API，本 MCP 服务器计划（或已）暴露以下核心功能作为 MCP Tools：
@@ -52,8 +117,8 @@
     * *MCP Tool:* `search_media_or_person`
     * *示例:* "搜索电影《星际穿越》", "找找演员 '基努·里维斯'"
 * **探索:** 探索来自豆瓣、TMDB的电影、电视剧。
-  * *MCP Tool:* `discover_douban_media`, `discover_tmdb_media`
-  * *示例:* "推荐一些豆瓣高分科幻片", "看看TMDB上正在热映的电影"
+    * *MCP Tool:* `discover_douban_media`, `discover_tmdb_media`
+    * *示例:* "推荐一些豆瓣高分科幻片", "看看TMDB上正在热映的电影"
 * **获取TMDb新作:** 获取TMDb即将上映的电影或最新播出的电视剧。
     * *MCP Tool:* `get_upcoming_or_newly_released_media`
     * *示例:* "最近有什么新上映的电影吗？", "有哪些最近开播的电视剧？"
@@ -73,28 +138,28 @@
     * *MCP Tool:* `add_subscribe`
     * *示例:* "订阅电影《沙丘2》", "订阅电视剧《黑暗荣耀》第一季，排除预告片"
 * **查看订阅:** 列出所有当前订阅或特定订阅的详情。
-  * *MCP Tool:* `list_subscribes` (列出所有), `get_subscribe` (获取单个)
-  * *示例:* "我现在有哪些订阅？", "我订阅了《奥本海默》吗？ (使用 get_subscribe, id_type='tmdb', id_value='奥本海默的TMDB
-    ID')", "查看订阅ID为5的详情 (使用 get_subscribe, id_type='subscribe', id_value='5')"
+    * *MCP Tool:* `list_subscribes` (列出所有), `get_subscribe` (获取单个)
+    * *示例:* "我现在有哪些订阅？", "我订阅了《奥本海默》吗？ (使用 get_subscribe, id_type='tmdb', id_value='奥本海默的TMDB
+      ID')", "查看订阅ID为5的详情 (使用 get_subscribe, id_type='subscribe', id_value='5')"
 * **更新订阅:** 修改现有订阅的设置（如过滤规则）。
-  * *MCP Tool:* `update_subscribe`
-  * *示例:* "把我《最后生还者》的订阅改成只下载特效字幕组的版本 (需要提供完整的订阅信息，包括ID)"
+    * *MCP Tool:* `update_subscribe`
+    * *示例:* "把我《最后生还者》的订阅改成只下载特效字幕组的版本 (需要提供完整的订阅信息，包括ID)"
 * **删除订阅:** 取消订阅。
-  * *MCP Tool:* `delete_subscribe`
-  * *示例:* "取消我的《沙丘2》订阅 (使用 delete_subscribe, id_type='tmdb', id_value='沙丘2的TMDB ID')", "
-    删除订阅ID为5的订阅 (使用 delete_subscribe, id_type='subscribe', id_value='5')"
+    * *MCP Tool:* `delete_subscribe`
+    * *示例:* "取消我的《沙丘2》订阅 (使用 delete_subscribe, id_type='tmdb', id_value='沙丘2的TMDB ID')", "
+      删除订阅ID为5的订阅 (使用 delete_subscribe, id_type='subscribe', id_value='5')"
 * **启用/禁用订阅:** 暂停或恢复订阅的自动搜索。
-  * *MCP Tool:* `set_subscribe_status`
-  * *示例:* "暂停订阅ID为3的订阅", "启用订阅ID为3的订阅"
+    * *MCP Tool:* `set_subscribe_status`
+    * *示例:* "暂停订阅ID为3的订阅", "启用订阅ID为3的订阅"
 
 ### 4. 资源查找
 
 * **精确搜索资源:** 根据 TMDB ID 或豆瓣 ID 查找可下载的种子。
-  * *API:* `GET /api/v1/search/media/{mediaid}`
-  * *示例:* "帮我找《奥本海默》的下载资源", "搜索《最后生还者》第一季所有集的下载"
+    * *API:* `GET /api/v1/search/media/{mediaid}`
+    * *示例:* "帮我找《奥本海默》的下载资源", "搜索《最后生还者》第一季所有集的下载"
 * **模糊搜索资源:** 根据关键词搜索种子。
-  * *API:* `GET /api/v1/search/title`
-  * *示例:* "搜索标题里有 '4K HDR 蜘蛛侠' 的资源"
+    * *API:* `GET /api/v1/search/title`
+    * *示例:* "搜索标题里有 '4K HDR 蜘蛛侠' 的资源"
 
 ### 5. 下载任务管理
 
@@ -150,10 +215,9 @@
     ```dotenv
     # .env Example
     MOVIEPILOT_BASE_URL=http://your-moviepilot-ip:3000  # 你的 MoviePilot 地址
-
-    # 配置认证方式
     MOVIEPILOT_USERNAME=your_moviepilot_username  # 你的 MoviePilot 用户名 (用于密码认证)
     MOVIEPILOT_PASSWORD=your_moviepilot_password  # 你的 MoviePilot 密码 (用于密码认证)
+    MCP_API_KEY=your_strong_api_key # 请设置一个强随机的API密钥，用于保护MCP服务器的访问
     ```
 3. **创建环境:**
    ```bash
