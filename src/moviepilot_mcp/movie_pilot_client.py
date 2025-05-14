@@ -43,10 +43,6 @@ class MoviePilotClient:
         self.base_url = base_url or os.getenv("MOVIEPILOT_BASE_URL")
         self._username = username or os.getenv("MOVIEPILOT_USERNAME")
         self._password = password or os.getenv("MOVIEPILOT_PASSWORD")
-        self._token: Optional[str] = None
-        self._client = httpx.AsyncClient(base_url=self.base_url, timeout=timeout)
-        self._auth_lock = asyncio.Lock()
-
         if not self.base_url:
             raise ValueError("MoviePilot URL未提供。请在 .env 文件中设置 MOVIEPILOT_BASE_URL。")
         if not self._username or not self._password:
@@ -54,6 +50,10 @@ class MoviePilotClient:
                 "未提供用户名和密码，无法进行自动登录。"
                 "请在 .env 文件中设置 MOVIEPILOT_USERNAME 和 MOVIEPILOT_PASSWORD。"
             )
+
+        self._token: Optional[str] = None
+        self._client = httpx.AsyncClient(base_url=self.base_url, timeout=timeout)
+        self._auth_lock = asyncio.Lock()
 
     async def login(self) -> None:
         """通过账密获取JWT Token"""
@@ -189,6 +189,7 @@ class MoviePilotClient:
 
 
 default_client = MoviePilotClient()
+
 
 async def main():
     async with MoviePilotClient() as client:
