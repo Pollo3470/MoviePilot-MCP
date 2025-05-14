@@ -1,4 +1,6 @@
+import os
 import uvicorn
+import yaml
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import JSONResponse
@@ -6,28 +8,6 @@ from starlette.types import ASGIApp
 
 from moviepilot_mcp.auth import ApiKeyAuth
 from moviepilot_mcp.server import mcp
-
-LOG_CONFIG = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "default": {
-            "()": "uvicorn.logging.DefaultFormatter",
-            "fmt": "%(levelprefix)s %(name)s: %(message)s",
-            "use_colors": True,
-        },
-    },
-    "handlers": {
-        "default": {
-            "formatter": "default",
-            "class": "logging.StreamHandler",
-            "stream": "ext://sys.stdout",
-        },
-    },
-    "loggers": {
-        "": {"handlers": ["default"], "level": "DEBUG"},
-    },
-}
 
 
 class ApiKeyAuthMiddleware(BaseHTTPMiddleware):
@@ -51,4 +31,10 @@ http_app = mcp.http_app()
 http_app.add_middleware(ApiKeyAuthMiddleware, auth_header="X-API-Key")
 
 if __name__ == "__main__":
-    uvicorn.run(http_app, host="0.0.0.0", port=8000, log_level="info", log_config=LOG_CONFIG)
+    if os.path.exists("logging.yaml"):
+        with open("logging.yaml", 'r') as f:
+            log_config = yaml.safe_load(f)
+        uvicorn.run(http_app, host="0.0.0.0", port=8000, log_level="info", log_config=log_config)
+    else:
+        uvicorn.run(http_app, host="0.0.0.0", port=8000, log_level="info")
+
