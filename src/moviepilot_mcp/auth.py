@@ -10,7 +10,7 @@ class ApiKeyAuth:
     用于管理和验证API密钥
     """
 
-    def __init__(self, env_var_name="MOVIEPILOT_API_KEY", key_length=32):
+    def __init__(self, env_var_name="MCP_API_KEY", key_length=32):
         """
         初始化API密钥认证类
         
