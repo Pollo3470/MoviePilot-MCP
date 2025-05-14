@@ -220,39 +220,6 @@ async def delete_subscribe(
         return await subscribeApi.delete_subscribe_by_media_id(media_id, season)
 
 
-@mcp.tool()
-async def set_subscribe_status(
-        subscribe_id: int,
-        enable: bool
-) -> Dict[str, Any]:
-    """
-    启用或禁用指定的订阅。
-
-    Args:
-        subscribe_id: 要操作的订阅ID。
-        enable: True 表示启用，False 表示禁用。
-
-    Returns:
-        操作结果信息。
-    """
-    return await subscribeApi.set_subscribe_status(subscribe_id, enable)
-
-
-@mcp.tool()
-async def get_upcoming_or_newly_released_media(
-        media_type: Literal["movie", "tv"] = "movie"
-) -> List[Dict[str, Any]]:
-    """
-    获取 TMDb 上即将上映的电影或最新发布的剧集列表 (按日期倒序)。
-    Args:
-        media_type: 媒体类型 ('movie' 或 'tv')
-
-    Returns:
-        即将上映/最新发布媒体信息列表
-    """
-    return await recommendApi.get_upcoming_or_newly_released(media_type)
-
-
 def main():
     parser = argparse.ArgumentParser(description="MoviePilot MCP Server")
     parser.add_argument(
