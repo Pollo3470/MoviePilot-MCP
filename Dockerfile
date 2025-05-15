@@ -35,4 +35,4 @@ EXPOSE 8000
 ENTRYPOINT []
 
 # 定义容器启动时运行的命令
-CMD ["python", "-m", "moviepilot_mcp.remote_server"]
+CMD ["uvicorn", "moviepilot_mcp.remote_server:http_app", "--host", "0.0.0.0", "--port", "8000", "--log-config", "logging.yaml", "--proxy-headers"]
