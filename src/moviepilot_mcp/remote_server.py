@@ -5,6 +5,7 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.types import ASGIApp
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from moviepilot_mcp.auth import ApiKeyAuth
 from moviepilot_mcp.server import mcp
@@ -29,6 +30,7 @@ class ApiKeyAuthMiddleware(BaseHTTPMiddleware):
 
 http_app = mcp.http_app()
 http_app.add_middleware(ApiKeyAuthMiddleware, auth_header="X-API-Key")
+http_app.add_middleware(ProxyHeadersMiddleware)
 
 if __name__ == "__main__":
     if os.path.exists("logging.yaml"):
