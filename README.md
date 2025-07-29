@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/pollo3470-moviepilot-mcp-badge.png)](https://mseep.ai/app/pollo3470-moviepilot-mcp)
+
 # MoviePilot MCP 服务器
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
