@@ -74,5 +74,7 @@ class ApiKeyAuth:
         """
         if not provided_key:
             return False
+        # 移除可能的前缀 "Bearer "
+        provided_key = provided_key.replace("Bearer ", "").strip()
 
         return secrets.compare_digest(provided_key, self.api_key)

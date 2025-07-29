@@ -12,16 +12,15 @@ from moviepilot_mcp.server import mcp
 
 
 class ApiKeyAuthMiddleware(BaseHTTPMiddleware):
-    def __init__(self, app: ASGIApp, auth_header: str = "X-API-Key"):
+    def __init__(self, app: ASGIApp):
         super().__init__(app)
-        self.auth_header = auth_header
         self.api_key_auth = ApiKeyAuth()
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint):
-        api_key = request.headers.get(self.auth_header)
+        api_key = request.headers.get("Authorization")
         if not self.api_key_auth.verify_api_key(api_key):
             return JSONResponse(
-                {"detail": f"缺少或无效的API密钥，请在请求头 {self.auth_header} 中提供有效的密钥"},
+                {"detail": "缺少或无效的API密钥，请提供有效的密钥"},
                 status_code=401,
             )
         response = await call_next(request)
@@ -29,7 +28,7 @@ class ApiKeyAuthMiddleware(BaseHTTPMiddleware):
 
 
 http_app = mcp.http_app()
-http_app.add_middleware(ApiKeyAuthMiddleware, auth_header="X-API-Key")
+http_app.add_middleware(ApiKeyAuthMiddleware)
 http_app.add_middleware(ProxyHeadersMiddleware)
 
 if __name__ == "__main__":

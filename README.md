@@ -83,7 +83,7 @@
    ```
 
 启动后，streamable http 的 MCP 服务将在 `http://localhost:8000/mcp` (或您配置的主机和端口) 上可用。请确保在客户端请求时，在
-HTTP Header 中包含 `X-API-Key` 并填入您在 `.env` 文件中设置的 `MCP_API_KEY`。
+HTTP Header 中包含 `Authorization` 并填入您在 `.env` 文件中设置的 `MCP_API_KEY`。
 
 ### 2. Stdio模式
 
